@@ -23,11 +23,10 @@ def main():
 
 def generate_groups(csv_file):
     
-    csv_file_path = sys.argv[1]
-    csv_file = open(csv_file_path, 'r')
+    csv_data = open(csv_file, 'r')
     
     
-    reader = csv.reader(csv_file)
+    reader = csv.reader(csv_data)
     k = 0
     g = 0
 
@@ -130,21 +129,23 @@ def write_csv(project_groups, group_info):
         fieldnames = ['Project', 'Group A', 'Group B', 'Group A Email', 'Group B Email', 'Group A Names', 'Group B Names']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        pnum = 1
+        pnum = 3
         for tup in project_groups:
-            # print(tup)
-            # print(tup[1])
-            # print(tup[1][0])
-            # print('\n')
+            print(tup)
+            print(tup[1])
+            print(tup[1][0])
+            print('\n')
             
-            for i in enumerate(tup):
+            for i in tup:
+                print(i[1])
                 output['Project'] = 'Project ' + str(pnum)
-                output['Group A'] = tup[i][0]
-                output['Group B'] = tup[i][1]
-                output['Group A Email'] = group_info[tup[i][0]]['emails']
-                output['Group B Email'] = group_info[tup[i][1]]['emails']
-                output['Group A Names'] = group_info[tup[i][0]]['names']
-                output['Group B Names'] = group_info[tup[i][1]]['names']
+                output['Group A'] = i[0]
+                output['Group B'] = i[1]
+                print(group_info[output['Group B']])
+                output['Group A Email'] = group_info[output['Group A']]['emails']
+                output['Group B Email'] = group_info[output['Group B']]['emails']
+                output['Group A Names'] = group_info[output['Group A']]['names']
+                output['Group B Names'] = group_info[output['Group B']]['names']
                 writer.writerow(output)
             pnum += 1
         
@@ -180,7 +181,7 @@ def process_gradescope(csv_path, yaml_path):
                 
                 for d in pairinfo:
                     # print(d['Project'])
-                    if d['Project'] == 'Project 1': ## Have to set this manually for now
+                    if d['Project'] == 'Project 3': ## Have to set this manually for now
                         if name in d['Group A Names']:
                             target = d['Group B']
                             # print(target + '>>>' + d['Group A'])
@@ -199,7 +200,7 @@ def process_gradescope(csv_path, yaml_path):
 def rename_file(orig, target, src):
     stem = orig.stem
     target = target.replace(" ", "_")
-    newname = str(orig).replace(stem, "P1PeerEval_sendto_" + target)
+    newname = str(orig).replace(stem, "P3PeerEval_sendto_" + target) ## manual 
     
     with open('eval_sources.txt', 'a') as f:
         f.write(str(orig) + " -> " + newname + " (from " + src + ")\n")
